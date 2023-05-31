@@ -1,0 +1,37 @@
+version: '3.7'
+
+services:
+
+  vehicle-ui:
+    container_name: vehicle-ui
+    build:
+      context: ./vehicle-ui
+    dns:
+      - 8.8.8.8
+    deploy:
+      restart_policy:
+        condition: on-failure
+    networks:
+      - vehicle-network
+    ports:
+      - "8080:8080"
+
+  vehicle-service:
+      container_name: vehicle-service
+      build:
+        context: ./vehicleservice
+      dns:
+        - 8.8.8.8
+      depends_on:
+        - vehicle-ui
+      ports:
+        - "8081:8081"
+      deploy:
+        restart_policy:
+          condition: on-failure
+      networks:
+        - vehicle-network
+networks:
+    vehicle-network:
+      driver: bridge
+
